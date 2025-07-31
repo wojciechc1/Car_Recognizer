@@ -28,7 +28,28 @@ meta_path = "../Datasets/cars_ds/car_devkit/devkit/cars_meta.mat"
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225])
 ])
+
+
+def get_class_names(meta_path = meta_path):
+    meta = sio.loadmat(meta_path)
+    raw_class_names = meta['class_names'][0]
+    class_names = [str(c.squeeze()) for c in raw_class_names]
+    model_to_brand = [ name.split()[0] for i, name in enumerate(class_names)]
+
+    unique_brands = list(dict.fromkeys(model_to_brand))  # ['AM', 'Acura', 'Aston']
+
+    # słownik id -> brand
+    brand_keys = [brand for brand in unique_brands]
+    print(brand_keys)
+
+    # listę oryginalnych marek na id
+    brands_idx = [brand_keys.index(brand) for brand in model_to_brand]
+
+    class_names = {id: [model, brands_idx[id]] for id, model in enumerate(class_names)}
+    return class_names, brand_keys
 
 
 def parse_annotations(annos):
@@ -50,6 +71,7 @@ class CarsDataset(Dataset):
     def __init__(self, dataframe, transform=None):
         self.dataframe = dataframe
         self.transform = transform
+        self.class_names, self.brand_keys = get_class_names(meta_path=meta_path)
 
     def __len__(self):
         return len(self.dataframe)
@@ -57,13 +79,15 @@ class CarsDataset(Dataset):
     def __getitem__(self, idx):
         row = self.dataframe.iloc[idx]
         image = Image.open(row['file_path']).convert("RGB")
-        label = row['class'] - 1  # klasy są od 1 do 196, więc trzeba -1
+        label = self.class_names[row['class'] - 1][1]  # klasy są od 1 do 196, więc trzeba -1
 
         if self.transform:
             image = self.transform(image)
 
         return image, label
 
+    def get_brand_keys(self):
+        return self.brand_keys
 
 def get_data_loaders(
         train_image_dir = train_image_dir,
@@ -72,6 +96,7 @@ def get_data_loaders(
         test_annos = test_annos,
         transform = transform,
         batch_size = 32,):
+
     train_df = parse_annotations(train_annos)
     train_df['file_path'] = train_df['file'].apply(lambda x: os.path.join(train_image_dir, x))
 
@@ -84,12 +109,6 @@ def get_data_loaders(
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-    return train_loader, test_loader
+    return train_loader, test_loader, train_dataset.get_brand_keys()
 
 
-def get_class_names(meta_path = meta_path):
-    meta = sio.loadmat(meta_path)
-    raw_class_names = meta['class_names'][0]
-    class_names = [str(c.squeeze()) for c in raw_class_names]
-    model_to_brand = {i: name.split()[0] for i, name in enumerate(class_names)}
-    return model_to_brand
