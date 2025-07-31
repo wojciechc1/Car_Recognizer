@@ -43,7 +43,6 @@ def get_class_names(meta_path = meta_path):
 
     # słownik id -> brand
     brand_keys = [brand for brand in unique_brands]
-    print(brand_keys)
 
     # listę oryginalnych marek na id
     brands_idx = [brand_keys.index(brand) for brand in model_to_brand]
