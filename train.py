@@ -21,6 +21,10 @@ def train(train_loader, model, criterion, optimizer, device, max_batches=6):
         # Oblicz accuracy
         _, preds = torch.max(outputs, 1)
         correct += (preds == labels).sum().item()
+        #print("shape outputs:", outputs.shape)
+        #print(labels[0], preds[0], outputs[0])
+        #print(labels.min(), labels.max(), labels.dtype)
+        #print("shape outputs", outputs.shape, " shape labels", labels.shape)
         total += labels.size(0)
 
         if batch_idx >= max_batches:

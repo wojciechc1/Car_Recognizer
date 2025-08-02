@@ -25,8 +25,27 @@ test_annos = sio.loadmat(train_anno_path)['annotations']
 # class names
 meta_path = "../Datasets/cars_ds/car_devkit/devkit/cars_meta.mat"
 
+
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225])
+])
+
+
+train_transform = transforms.Compose([
+    transforms.RandomResizedCrop(224),
+    transforms.RandomHorizontalFlip(),
+    transforms.ColorJitter(brightness=0.1, contrast=0.1),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225])
+])
+
+test_transform = transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                          std=[0.229, 0.224, 0.225])
@@ -102,8 +121,8 @@ def get_data_loaders(
     test_df = parse_annotations(test_annos)
     test_df['file_path'] = test_df['file'].apply(lambda x: os.path.join(test_image_dir, x))
 
-    train_dataset = CarsDataset(train_df, transform=transform)
-    test_dataset = CarsDataset(test_df, transform=transform)
+    train_dataset = CarsDataset(train_df, transform=train_transform)
+    test_dataset = CarsDataset(test_df, transform=test_transform)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
