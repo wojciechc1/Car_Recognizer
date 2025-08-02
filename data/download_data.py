@@ -1,8 +1,8 @@
 from downloader import downloader
 
 
-brands = ['Audi']
-view_ports = ['side']
+brands = ['Mercedes']
+view_ports = ['front', 'side', 'rear']
 
 num_images = 100
 
