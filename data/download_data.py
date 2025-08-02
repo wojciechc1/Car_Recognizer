@@ -1,10 +1,10 @@
 from downloader import downloader
 
 
-brands = ['Audi', 'Bmw']
-view_ports = ['front', 'side', 'rear']
+brands = ['Audi']
+view_ports = ['side']
 
-num_images = 1
+num_images = 100
 
 
 for brand in brands:
