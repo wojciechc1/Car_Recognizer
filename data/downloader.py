@@ -67,7 +67,7 @@ def scroll_to_load_thumbnails(driver, wait, min_count=150, scroll_pause=1):
     while True:
         # Scroll to bottom
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(scroll_pause)
+        time.sleep(0.1)
 
         # download all thubnails
         new_thumbnails = driver.find_elements(By.CSS_SELECTOR, ".cC9Rib")
@@ -140,6 +140,7 @@ def downloader(query, directory, num_images=5):
             logging.error(f"Error during clicking or downloading image. {e}")
 
         i += 1
-        logging.info(f"Finished. Downloaded {count} images")
+
+    logging.info(f"Finished. Downloaded {count} images")
 
     driver.quit()

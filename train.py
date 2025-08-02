@@ -27,8 +27,6 @@ def train(train_loader, model, criterion, optimizer, device, max_batches=6):
         #print("shape outputs", outputs.shape, " shape labels", labels.shape)
         total += labels.size(0)
 
-        if batch_idx >= max_batches:
-            break
 
     avg_loss = total_loss / len(train_loader)
     accuracy = correct / total if total > 0 else 0
