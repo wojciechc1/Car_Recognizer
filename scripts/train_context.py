@@ -44,14 +44,14 @@ def train(train_loader, model, criterion, optimizer, device, max_batches=6):
 
 
 def train_context_classifier():
-    full_dataset = SafeImageFolder("data/dataset/train", transform=None)
+    full_dataset = SafeImageFolder("../data/dataset/train", transform=None)
 
     val_size = int(0.2 * len(full_dataset))
     train_size = len(full_dataset) - val_size
     train_dataset, val_dataset = random_split(full_dataset, [train_size, val_size])
 
-    train_dataset = Subset(SafeImageFolder("data/dataset/train", transform=train_transform, loader=safe_loader), train_dataset.indices)
-    val_dataset = Subset(SafeImageFolder("data/dataset/train", transform=val_transform, loader=safe_loader), val_dataset.indices)
+    train_dataset = Subset(SafeImageFolder("../data/dataset/train", transform=train_transform, loader=safe_loader), train_dataset.indices)
+    val_dataset = Subset(SafeImageFolder("../data/dataset/train", transform=val_transform, loader=safe_loader), val_dataset.indices)
 
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
@@ -88,7 +88,7 @@ def train_context_classifier():
         print(f"Epoch {epoch+1}: Train Acc: {train_acc:.2f}, Test Acc: {test_acc:.2f}")
 
     plot_metrics(train_losses, test_losses, train_accs, test_accs)
-    torch.save(model.state_dict(), "weights/context_classifier.pth")
+    torch.save(model.state_dict(), "../models/context_classifier.pth")
 
 if __name__ == "__main__":
     train_context_classifier()

@@ -9,7 +9,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from torchvision.models import resnet18, ResNet18_Weights
 
-from scripts.train_context import train
+from scripts.train_context import raw
 from scripts.test_context import test
 
 from torch.utils.data import Subset
@@ -23,7 +23,7 @@ warnings.filterwarnings("ignore", message="image file could not be identified be
 if __name__ == "__main__":
     from utils.dataset import SafeImageFolder, safe_loader, train_transform, val_transform  # jeśli masz osobny plik
 
-    full_dataset = SafeImageFolder("data/dataset/train", transform=None)
+    full_dataset = SafeImageFolder("data/dataset/raw", transform=None)
 
     # Podział na indeksy
     val_size = int(0.2 * len(full_dataset))
@@ -31,13 +31,13 @@ if __name__ == "__main__":
     train_dataset, val_dataset = random_split(full_dataset, [train_size, val_size])
 
     # Przypisz transformacje ręcznie
-    train_dataset = Subset(SafeImageFolder("data/dataset/train", transform=train_transform, loader=safe_loader), train_dataset.indices)
-    val_dataset = Subset(SafeImageFolder("data/dataset/train", transform=val_transform, loader=safe_loader), val_dataset.indices)
+    train_dataset = Subset(SafeImageFolder("data/dataset/raw", transform=train_transform, loader=safe_loader), train_dataset.indices)
+    val_dataset = Subset(SafeImageFolder("data/dataset/raw", transform=val_transform, loader=safe_loader), val_dataset.indices)
 
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
-    #train_dataset = SafeImageFolder("data/dataset/train", transform=train_transform, loader=safe_loader)
+    #train_dataset = SafeImageFolder("data/dataset/raw", transform=train_transform, loader=safe_loader)
     #test_dataset = SafeImageFolder("data/dataset/test", transform=transform)
 
     #train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=2)
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
     for epoch in range(20):
 
-        train_loss, train_acc = train(train_loader, model, criterion, optimizer, device)
+        train_loss, train_acc = raw(train_loader, model, criterion, optimizer, device)
         test_loss, test_acc = test(val_loader, model, criterion, device)
         scheduler.step(test_loss)
 
