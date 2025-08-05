@@ -1,4 +1,7 @@
-from utils.plot_metrics import plot_metrics
+
+
+
+'''from utils.plot_metrics import plot_metrics
 
 import torch
 import torch.nn as nn
@@ -97,5 +100,12 @@ if __name__ == "__main__":
 
 
     plot_metrics(train_losses, test_losses, train_accs, test_accs)
+'''
 
 
+from pipelines.context_pipeline import ContextPipeline
+
+if __name__ == "__main__":
+    pipeline = ContextPipeline("weights/context_classifier.pth")
+    label, probs = pipeline.run("example.jpg")
+    print(label)
