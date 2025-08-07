@@ -1,9 +1,8 @@
 from inference.logo_detector import LogoDetector
 
+
 detector = LogoDetector()
-detector.train(data_yaml='path/to/data.yaml', epochs=20)
-model.train(data='ścieżka/do/data.yaml', epochs=10, imgsz=640)
+detector.train(data_yaml='../data/dataset_logo_bb/yolo_ds/data.yaml', epochs=50)
 
-results = detector.predict('test_image.jpg')
-print(results)
-
+results = detector.predict('../data/dataset/train/audi/front/image_0.jpg')
+results[0].show()

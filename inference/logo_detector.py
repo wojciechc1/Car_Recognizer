@@ -18,6 +18,14 @@ class LogoDetector:
         self.model.train(data=data_yaml, epochs=epochs, imgsz=imgsz)
 
     def predict(self, image):
-        # image może być ścieżką do pliku lub np. numpy array (OpenCV image)
         results = self.model(image)
-        return results
+        detections = []
+        for box in results[0].boxes.data.cpu().numpy():
+            x1, y1, x2, y2, conf, cls_id = box
+            label = results[0].names[int(cls_id)]
+            detections.append({
+                "label": label,
+                "confidence": float(conf),
+                "bbox": [float(x1), float(y1), float(x2), float(y2)]
+            })
+        return detections
