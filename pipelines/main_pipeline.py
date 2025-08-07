@@ -6,6 +6,6 @@
 - (front) - ContextClassifier - LogoDetector
 - (side) - CarTypeClassifier
 - (back) - [ContextClassifier] - LogoDetector - ModelDetector
-- (angled) - CarTypeClassifier - LogoDetector
+- ----(angled) - CarTypeClassifier - LogoDetector
 
 '''
