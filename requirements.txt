@@ -4,4 +4,6 @@ torchvision
 ultralytics
 Pillow
 matplotlib
+Pillow
 opencv-python-headless
+numpy
