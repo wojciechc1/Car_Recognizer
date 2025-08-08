@@ -2,6 +2,7 @@ import streamlit as st
 from pipelines.main_pipeline import CarAnalysisPipeline
 from PIL import Image
 import tempfile
+import os
 
 
 pipeline = CarAnalysisPipeline(paths={
@@ -24,12 +25,22 @@ if uploaded_file:
     st.image(image, caption="Uploaded Image", use_column_width=True)
 
     if st.button("Run Classification"):
-        with st.spinner("🔍 Analyzing..."):
+        with st.spinner("Analyzing..."):
+            # Zapisz obrazek tymczasowo na dysku
+
             with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp:
                 temp_path = temp.name
+
                 image.save(temp_path)
 
-                results = pipeline.run(temp_path)
+            # Uruchom pipeline z tą ścieżką
 
-        st.subheader("Prediction Result (JSON):")
+            results = pipeline.run(temp_path)
+
+            # Usuń plik tymczasowy
+
+            os.remove(temp_path)
+
+        st.subheader("🔍 Prediction Result:")
+
         st.json(results)
