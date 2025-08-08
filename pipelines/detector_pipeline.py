@@ -1,8 +1,9 @@
 from inference.logo_detector import LogoDetector
 
+class LogoPipeline:
+    def __init__(self, model_path, device=None):
+        self.detector = LogoDetector(model_path=model_path, device=device)
 
-detector = LogoDetector(model_path='../scripts/runs/detect/train2/weights/best.pt')
-
-results = detector.predict('../audi_test.jpeg')
-
-print(results)
+    def run(self, image_path):
+        results = self.detector.predict(image_path)
+        return results
