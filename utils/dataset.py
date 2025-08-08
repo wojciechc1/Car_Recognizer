@@ -1,31 +1,3 @@
-from torchvision.datasets import ImageFolder
-from PIL import Image, UnidentifiedImageError
-
-
-class SafeImageFolder(ImageFolder):
-    def __getitem__(self, index):
-        path, target = self.samples[index]
-        try:
-            sample = self.loader(path)
-        except (UnidentifiedImageError, OSError):
-            # spróbuj kolejny, w kółko aż trafimy dobry
-            return self.__getitem__((index + 1) % len(self.samples))
-        if self.transform:
-            sample = self.transform(sample)
-        return sample, target
-
-
-def safe_loader(path):
-    try:
-        with Image.open(path) as img:
-            if img.mode == "P":
-                img = img.convert("RGBA").convert("RGB")
-            else:
-                img = img.convert("RGB")
-            return img
-    except (UnidentifiedImageError, OSError):
-        raise
-
 from PIL import Image
 from torchvision import transforms
 
