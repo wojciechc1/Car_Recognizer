@@ -1,6 +1,4 @@
-import torch
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
+from torchvision import datasets
 
 import torch
 import torch.nn as nn
@@ -10,8 +8,8 @@ from torchvision.models import resnet18, ResNet18_Weights
 from utils.dataset import train_transform, val_transform
 from utils.plot_metrics import plot_metrics
 
-from train import train
-from test import test
+from utils.train import train
+from utils.test import test
 
 def train_view_classifier():
 
