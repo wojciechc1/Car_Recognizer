@@ -6,7 +6,7 @@ from PIL import Image
 class ContextPipeline:
     def __init__(self, model_path, class_names=None, device=None):
         self.classifier = ContextClassifier(model_path, device)
-        self.class_names = class_names or ["audi", "toyota", "bmw"]  # <- dopasuj do siebie
+        self.class_names = class_names or ["audi", "toyota", "bmw"]
 
     def run(self, image_path):
         try:

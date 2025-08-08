@@ -11,8 +11,9 @@
 '''
 
 from pipelines.view_pipeline import ViewPipeline
-from pipelines.detector_pipeline import LogoPipeline
+from pipelines.logo_detector_pipeline import LogoPipeline
 from pipelines.context_pipeline import ContextPipeline
+#from utils.calculate_score import calculate_score
 
 class CarAnalysisPipeline:
     def __init__(self, paths):
@@ -60,5 +61,14 @@ class CarAnalysisPipeline:
                 # "model": model_result
             })
 
+        # 1. Uruchamiasz car detector
+        #car_result = car_detector_pipeline.run("images/test.jpg")
+        # car_result np. = {"label": "car", "bbox": [50, 100, 300, 400], "score": 0.98}
 
+        # 2. Przepuszczasz przez color classifier
+        #color_result = color_classifier_pipeline.run("images/test.jpg", car_result["bbox"])
+        #result.update({
+        #    "color": color_result
+        #})
+        #result = calculate_score(result)
         return result

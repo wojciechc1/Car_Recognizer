@@ -1,18 +1,11 @@
 import streamlit as st
-from pipelines.main_pipeline import CarAnalysisPipeline
+from pipelines.smart_analysis_pipeline import CarAnalysisPipeline
 from PIL import Image
 import tempfile
 import os
 import cv2
 import numpy as np
 
-pipeline = CarAnalysisPipeline(paths={
-    "view": "./config/view_classifier.pth",
-    "logo": "./scripts/runs/detect/train2/weights/best.pt",
-    "context": "./config/context_classifier.pth",
-    # "type": "...",
-    # "model": "..."
-})
 
 # Funkcja do rysowania ramki
 def draw_logo_boxes(image: np.ndarray, logos: list) -> np.ndarray:
@@ -31,31 +24,44 @@ def draw_logo_boxes(image: np.ndarray, logos: list) -> np.ndarray:
 
 
 
-# Streamlit UI
+
+pipeline = CarAnalysisPipeline(paths={
+    "view": "./config/view_classifier.pth",
+    "logo": "./scripts/runs/detect/train2/weights/best.pt",
+    "context": "./config/context_classifier.pth",
+    # "type": "...",
+    # "model": "..."
+})
+
 st.title("🚗 Car Classifier Demo")
 
-uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+mode = st.radio("Select analysis mode::", ("Smart recognizer (1 photo)", "Complex recognition (3 photos)"))
 
-if uploaded_file:
-    image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    if st.button("Run Classification"):
-        with st.spinner("🔍 Analyzing..."):
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp:
-                temp_path = temp.name
-                image.save(temp_path)
+if mode == "Smart recognizer (1 photo)":
 
-            results = pipeline.run(temp_path)
-            os.remove(temp_path)
+    uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
-        st.subheader("📊 Prediction Result:")
-        st.json(results)
+    if uploaded_file:
+        image = Image.open(uploaded_file).convert("RGB")
+        st.image(image, caption="Uploaded Image", use_container_width=True)
 
-        # Jeśli jest detekcja logo, narysuj
-        if "logo" in results and results["logo"]:
-            img_array = np.array(image)
-            img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
-            img_with_boxes = draw_logo_boxes(img_bgr, results["logo"])
-            img_rgb = cv2.cvtColor(img_with_boxes, cv2.COLOR_BGR2RGB)
-            st.image(img_rgb, caption="🟩 Logo Detection", use_container_width=True)
+        if st.button("Run Classification"):
+            with st.spinner("🔍 Analyzing..."):
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp:
+                    temp_path = temp.name
+                    image.save(temp_path)
+
+                results = pipeline.run(temp_path)
+                os.remove(temp_path)
+
+            st.subheader("📊 Prediction Result:")
+            st.json(results)
+
+            # Jeśli jest detekcja logo, narysuj
+            if "logo" in results and results["logo"]:
+                img_array = np.array(image)
+                img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+                img_with_boxes = draw_logo_boxes(img_bgr, results["logo"])
+                img_rgb = cv2.cvtColor(img_with_boxes, cv2.COLOR_BGR2RGB)
+                st.image(img_rgb, caption="🟩 Logo Detection", use_container_width=True)
