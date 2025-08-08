@@ -6,7 +6,7 @@ import torch
 class ViewPipeline:
     def __init__(self, model_path, class_names=None, device=None):
         self.classifier = ViewClassifier(model_path, device)
-        self.class_names = class_names or ["front", "rear", "side"] 
+        self.class_names = class_names or ["front", "rear", "side"]
 
     def run(self, image_path):
         try:

@@ -7,7 +7,7 @@ class ContextClassifier:
     def __init__(self, model_path=None, device=None):
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = resnet18(weights=ResNet18_Weights.DEFAULT)
-        self.model.fc = nn.Linear(self.model.fc.in_features, 4)
+        self.model.fc = nn.Linear(self.model.fc.in_features, 2)
         self.model.to(self.device)
 
         if model_path:

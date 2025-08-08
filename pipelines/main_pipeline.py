@@ -12,13 +12,13 @@
 
 from pipelines.view_pipeline import ViewPipeline
 from pipelines.detector_pipeline import LogoPipeline
-
+from pipelines.context_pipeline import ContextPipeline
 
 class CarAnalysisPipeline:
     def __init__(self, paths):
         self.view_classifier = ViewPipeline(model_path=paths["view"])
         self.logo_detector = LogoPipeline(model_path=paths["logo"])
-        # self.context_classifier = ContextClassifierPipeline(model_path=paths["context"])
+        self.context_classifier = ContextPipeline(model_path=paths["context"])
         # self.car_type_classifier = CarTypeClassifierPipeline(model_path=paths["type"])
         # self.model_detector = ModelDetectorPipeline(model_path=paths["model"])
 
@@ -27,15 +27,17 @@ class CarAnalysisPipeline:
 
         # 1. VIEW CLASSIFICATION
         view = self.view_classifier.run(image_path)
-        result["view"] = view["label_name"]
-        result["view_probs"] = view["probabilities"]
+        result["view"] = view
+        result.update({
+            "view": view
+        })
 
         # 2. BRANCHING BASED ON VIEW
         if view["label_name"] == "front":
-            # context_result = self.context_classifier.run(image_path)
+            context_result = self.context_classifier.run(image_path)
             logo_result = self.logo_detector.run(image_path)
             result.update({
-                # "context": context_result,
+                "context": context_result,
                 "logo": logo_result
             })
 
