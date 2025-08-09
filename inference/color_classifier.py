@@ -4,14 +4,10 @@ from torchvision.models import resnet18, ResNet18_Weights
 
 
 class ColorClassifier:
-    def __init__(self, model_path=None, num_colors=8, device=None): #black, white, gray, red, blue, green, yellow, other
+    def __init__(self, model_path=None, device=None): #black, white, gray, red, green, yellow, other
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-        # Ładujemy pretrenowany model ResNet18
         self.model = resnet18(weights=ResNet18_Weights.DEFAULT)
-
-        # Zamieniamy ostatnią warstwę na taką, która przewiduje kolory
-        self.model.fc = nn.Linear(self.model.fc.in_features, num_colors)
+        self.model.fc = nn.Linear(self.model.fc.in_features, 7)
         self.model.to(self.device)
 
         # Wczytanie wytrenowanego modelu (jeśli jest podany)

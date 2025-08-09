@@ -9,17 +9,21 @@
 - /future/'----(angled) - CarTypeClassifier - LogoDetector
 
 '''
-
+from inference import car_detector
 from pipelines.view_pipeline import ViewPipeline
 from pipelines.logo_detector_pipeline import LogoPipeline
 from pipelines.context_pipeline import ContextPipeline
 #from utils.calculate_score import calculate_score
+from pipelines.car_detector_pipeline import CarPipeline
+from pipelines.color_pipeline import ColorClassifierPipeline
 
 class CarAnalysisPipeline:
     def __init__(self, paths):
         self.view_classifier = ViewPipeline(model_path=paths["view"])
         self.logo_detector = LogoPipeline(model_path=paths["logo"])
         self.context_classifier = ContextPipeline(model_path=paths["context"])
+        self.car_detector = CarPipeline(model_path=paths["car"])
+        self.color_detector = ColorClassifierPipeline(model_path=paths["color"])
         # self.car_type_classifier = CarTypeClassifierPipeline(model_path=paths["type"])
         # self.model_detector = ModelDetectorPipeline(model_path=paths["model"])
 
@@ -32,6 +36,14 @@ class CarAnalysisPipeline:
         result.update({
             "view": view
         })
+        carbox = self.car_detector.run(image_path)
+        if not carbox:
+            # brak wykrytych aut, obsłuż wyjątek lub zwróć None
+            result.update({"carbox": [], "color": None})
+        else:
+            result.update({"carbox": carbox})
+            color = self.color_detector.run(image_path, carbox)
+            result.update({'color': color})
 
         # 2. BRANCHING BASED ON VIEW
         if view["label_name"] == "front":

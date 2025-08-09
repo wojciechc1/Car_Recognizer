@@ -6,18 +6,23 @@ smart_pipeline = CarAnalysisPipeline(paths={
     "view": "./config/view_classifier.pth",
     "logo": "./scripts/runs/detect/train2/weights/best.pt",
     "context": "./config/context_classifier.pth",
+    "car": "./config/car_detector.pt",
+    "color": "./config/color_classifier.pth"
     # "type": "...",
     # "model": "..."
 })
 
-#results = smart_pipeline.run("./test2.jpg")
+results = smart_pipeline.run("./test2.jpg")
 
-#save_result_to_json(results, "result.json")
+save_result_to_json(results, "result.json")
+
 
 complex_pipeline = ComplexCarAnalysisPipeline(paths={
     "view": "./config/view_classifier.pth",
     "logo": "./scripts/runs/detect/train2/weights/best.pt",
     "context": "./config/context_classifier.pth",
+    "car": "./config/car_detector.pt",
+    "color": "./config/color_classifier.pth"
     # "type": "...",
     # "model": "..."
 })

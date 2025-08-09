@@ -6,18 +6,24 @@ from PIL import Image
 class ColorClassifierPipeline:
     def __init__(self, model_path, class_names=None, device=None):
         self.classifier = ColorClassifier(model_path, device)
-        # Domyślne nazwy kolorów (możesz zmienić lub przekazać własne)
-        self.class_names = class_names or ["black", "white", "gray", "red", "blue", "green", "yellow", "other"]
 
-    def run(self, image_path, bbox):
+        self.class_names = class_names or ['black', 'blue', 'gray', 'other', 'red', 'white', 'yellow']
+
+    def run(self, image_path, carbox):
         """
         image_path: ścieżka do pliku z obrazem
         bbox: [x_min, y_min, x_max, y_max] w pikselach
         """
+
         try:
             img = Image.open(image_path).convert("RGB")
         except Exception as e:
             raise ValueError(f"Error loading image: {e}")
+
+        largest_car = max(carbox,
+                          key=lambda det: (det["bbox"][2] - det["bbox"][0]) * (det["bbox"][3] - det["bbox"][1]))
+
+        bbox = largest_car["bbox"]
 
         # Wycinanie bounding boxa auta
         x_min, y_min, x_max, y_max = map(int, bbox)

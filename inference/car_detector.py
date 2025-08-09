@@ -17,7 +17,7 @@ class CarDetector:
         Wrapper do treningu modelu YOLOv8 z ultralytics.
         data_yaml: ścieżka do pliku z danymi (train/test/classes)
         """
-        self.model.train(data=data_yaml, epochs=epochs, imgsz=imgsz)
+        self.model.train(data=data_yaml, epochs=epochs, workers=6, imgsz=imgsz)
 
 
     def predict(self, image):
