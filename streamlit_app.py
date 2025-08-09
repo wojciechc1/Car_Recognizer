@@ -9,6 +9,12 @@ import cv2
 import numpy as np
 
 
+os.environ["YOLO_CONFIG_DIR"] = "/tmp/UltralyticsConfig"
+
+if not os.path.exists("/tmp/UltralyticsConfig"):
+    os.makedirs("/tmp/UltralyticsConfig")
+
+
 def draw_boxes(image_bgr, detections, color):
     for det in detections:
         x1, y1, x2, y2 = map(int, det["bbox"])
