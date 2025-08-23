@@ -1,8 +1,12 @@
+main problems: 
+ - used to much RAM. - couldn't deploy on streamlit
+ - couln't find good datasets (cars pics and models info) - The main idea was to extract features by ml and then match it with specific model. 
+
+
 # 🚗 Car Image Classification Pipeline
 
 This system analyzes car images and classifies them step-by-step based on the detected view of the vehicle.
 
-Live demo: https://carrecognizer-ebmf6tmkpus6xcsjfxccpn.streamlit.app/#car-classifier-demo
 ---
 
 ## 🧠 System Overview
